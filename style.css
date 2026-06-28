@@ -1,5 +1,6 @@
 :root {
     --accent: #00fff9;
+    --accent-fade: rgba(0, 255, 249, 0.4);
 }
 
 * {
@@ -23,16 +24,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* WebKit/Blink only (Chrome, Edge, Safari) — no effect in Firefox, accepted limitation */
-    -webkit-box-reflect: below 0 linear-gradient(transparent, transparent, #0005);
+}
+
+.container .reflection {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scaleY(-1);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 70%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 70%);
+    pointer-events: none;
 }
 
 .container .loader {
     position: absolute;
-    width: 200px;
-    height: 200px;
+    width: min(200px, 45vw);
+    height: min(200px, 45vw);
     border-radius: 50%;
-    animation: animate 2s linear infinite;
+    animation: animate 1.8s cubic-bezier(.55, .05, .45, .95) infinite;
 }
 
 @keyframes animate {
@@ -51,7 +65,8 @@ body {
     left: 0;
     width: 50%;
     height: 100%;
-    background: linear-gradient(to top, transparent, rgba(0, 255, 249, 0.4));
+    background: linear-gradient(to top, transparent, var(--accent-fade));
+    background: linear-gradient(to top, transparent, color-mix(in srgb, var(--accent) 40%, transparent));
     border-top-left-radius: 100px;
     border-bottom-left-radius: 100px;
 } 
@@ -61,34 +76,39 @@ body {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
+    width: 10%;
+    height: 10%;
     background: var(--accent);
     border-radius: 50%;
     z-index: 2;
-    box-shadow: 0 0 19px var(--accent),
-        0 0 20px var(--accent),
-        0 0 30px var(--accent),
+    animation: pulse 1.8s ease-in-out infinite;
+    box-shadow: 0 0 20px var(--accent),
         0 0 40px var(--accent),
-        0 0 50px var(--accent),
         0 0 60px var(--accent),
-        0 0 70px var(--accent),
-        0 0 80px var(--accent),
-        0 0 90px var(--accent),
         0 0 100px var(--accent);
 
 }
 
-.container .loader span:not(.dot) {
+@keyframes pulse {
+    0%, 100% {
+        transform: translateX(-50%) scale(1);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.15);
+    }
+}
+
+.container .loader .core {
     position: absolute;
-    inset: 20px;
+    inset: 10%;
     background: #000;
     border-radius: 50%;
     z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .container .loader {
+    .container .loader,
+    .container .loader .dot {
         animation: none;
     }
 }
